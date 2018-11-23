@@ -1,6 +1,7 @@
 # boiling
 An incremented id generator based on etcd, mainly relied on the behavior that etcd increments the version of key when any modification(put call) occured
 
+[![Build Status](https://travis-ci.org/bittenApple/boiling.svg?branch=master)](https://travis-ci.org/bittenApple/boiling)
 [![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
 [![GoDoc](https://godoc.org/github.com/bittenApple/boiling?status.svg)](https://godoc.org/github.com/bittenApple/boiling)
 
