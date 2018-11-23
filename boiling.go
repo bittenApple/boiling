@@ -82,33 +82,35 @@ func NewClient(opt *Options) (*Client, error) {
 // Stop stops generating id, and getId() function will always return 0
 func (c *Client) Stop() {
 	c.cancel()
-	close(c.ch)
-	c.ecli.Close()
 }
 
 func (c *Client) run() {
+	defer func() {
+		c.ecli.Close()
+		close(c.ch)
+	}()
 	for {
-		select {
-		case <-c.ctx.Done():
-			logErrf("boiling was stopped")
-			return
-		default:
-			resp, err := c.ecli.Put(context.Background(), c.options.Key, defaultVal, ecli.WithPrevKV())
-			if err != nil {
-				logErrf("put request error: %s", err)
-				time.Sleep(100 * time.Millisecond)
-				continue
-			}
+		resp, err := c.ecli.Put(context.Background(), c.options.Key, defaultVal, ecli.WithPrevKV())
+		if err != nil {
+			logErrf("put request error: %s", err)
+			time.Sleep(100 * time.Millisecond)
+			continue
+		}
 
-			var ver, i int64
-			if resp.PrevKv == nil { // Key not exited, first put
-				ver = 0
-			} else {
-				ver = resp.PrevKv.Version
-			}
+		var ver, i int64
+		if resp.PrevKv == nil { // Key not exited, first put
+			ver = 0
+		} else {
+			ver = resp.PrevKv.Version
+		}
 
-			start := ver*c.options.Buffer + c.options.Start
-			for i = 0; i < c.options.Buffer; i++ {
+		start := ver*c.options.Buffer + c.options.Start
+		for i = 0; i < c.options.Buffer; i++ {
+			select {
+			case <-c.ctx.Done():
+				logErrf("boiling was stopped")
+				return
+			default:
 				c.ch <- i + start
 			}
 		}
