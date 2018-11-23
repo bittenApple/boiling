@@ -1,5 +1,5 @@
 # boiling
-An incremented id generator based on etcd, that etcd increments the key version of key when any modification(put call) occured
+An incremented id generator based on etcd, mainly relied on the behavior that etcd increments the version of key when any modification(put call) occured
 
 ## Import
 ```

@@ -1,3 +1,4 @@
+// Package boiling provides function to generate incremented id based on etcd
 package boiling
 
 import (
