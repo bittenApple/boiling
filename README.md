@@ -1,4 +1,4 @@
 # boiling
-An id generator based on etcd
+An incremented id generator based on etcd
 
 ## Usage example
