@@ -26,6 +26,9 @@ type Client struct {
 	options *Options
 	ecli    *ecli.Client
 	ch      chan int64
+
+	ctx    context.Context
+	cancel context.CancelFunc
 }
 
 // NewClient returns a client which generates incremented id.
@@ -70,33 +73,43 @@ func NewClient(opt *Options) (*Client, error) {
 		}
 	}
 
+	c.ctx, c.cancel = context.WithCancel(context.Background())
 	go c.run()
 	return &c, nil
 }
 
-func (c *Client) Exit() {
+// Stop stops generating id, and getId() function will always return 0
+func (c *Client) Stop() {
+	c.cancel()
+	close(c.ch)
 	c.ecli.Close()
 }
 
 func (c *Client) run() {
 	for {
-		resp, err := c.ecli.Put(context.Background(), c.options.Key, defaultVal, ecli.WithPrevKV())
-		if err != nil {
-			LogErrf("put request error: %s", err)
-			time.Sleep(100 * time.Millisecond)
-			continue
-		}
+		select {
+		case <-c.ctx.Done():
+			LogErrf("boiling was stopped")
+			return
+		default:
+			resp, err := c.ecli.Put(context.Background(), c.options.Key, defaultVal, ecli.WithPrevKV())
+			if err != nil {
+				LogErrf("put request error: %s", err)
+				time.Sleep(100 * time.Millisecond)
+				continue
+			}
 
-		var ver, i int64
-		if resp.PrevKv == nil { // Key not exited, first put
-			ver = 0
-		} else {
-			ver = resp.PrevKv.Version
-		}
+			var ver, i int64
+			if resp.PrevKv == nil { // Key not exited, first put
+				ver = 0
+			} else {
+				ver = resp.PrevKv.Version
+			}
 
-		start := ver*c.options.Buffer + c.options.Start
-		for i = 0; i < c.options.Buffer; i++ {
-			c.ch <- i + start
+			start := ver*c.options.Buffer + c.options.Start
+			for i = 0; i < c.options.Buffer; i++ {
+				c.ch <- i + start
+			}
 		}
 	}
 }

@@ -1,7 +1,6 @@
 package boiling
 
 import (
-	"fmt"
 	"os"
 	"strings"
 	"testing"
@@ -21,7 +20,6 @@ func init() {
 		return defaultValue
 	}
 	endpoints = strings.Split(env("ETCD_ENDPOINTS", ""), ",")
-	fmt.Println(endpoints)
 }
 
 func TestGetId(t *testing.T) {
@@ -38,5 +36,20 @@ func TestGetId(t *testing.T) {
 	var i int64
 	for i = 0; i < 100; i++ {
 		assert.Equal(t, i, cli.GetId())
+	}
+}
+
+func TestStop(t *testing.T) {
+	o := &Options{
+		Endpoints: endpoints,
+		Key:       TestKey,
+		Initial:   true,
+	}
+
+	cli, err := NewClient(o)
+	assert.Nil(t, err)
+	cli.Stop()
+	for i := 0; i < 10; i++ {
+		assert.Equal(t, int64(0), cli.GetId())
 	}
 }
