@@ -91,15 +91,15 @@ func (c *Client) run() {
 		} else {
 			ver = resp.PrevKv.Version
 		}
-		start := ver*c.options.Buffer + c.options.Start
 
+		start := ver*c.options.Buffer + c.options.Start
 		for i = 0; i < c.options.Buffer; i++ {
 			c.ch <- i + start
 		}
 	}
 }
 
-// Next returns the generated id in sequence
+// GetId returns the generated id in sequence
 func (c *Client) GetId() int64 {
 	return <-c.ch
 }
