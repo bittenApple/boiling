@@ -16,7 +16,7 @@ func SetLogger(l *log.Logger) {
 	logger = l
 }
 
-func Logf(s string, args ...interface{}) {
+func LogErrf(s string, args ...interface{}) {
 	if logger == nil {
 		return
 	}
