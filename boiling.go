@@ -5,9 +5,8 @@ import (
 	"errors"
 	"time"
 
-	"google.golang.org/grpc"
-
 	ecli "github.com/etcd-io/etcd/clientv3"
+	"google.golang.org/grpc"
 )
 
 const (
