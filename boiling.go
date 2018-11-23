@@ -5,6 +5,8 @@ import (
 	"errors"
 	"time"
 
+	"google.golang.org/grpc"
+
 	ecli "github.com/etcd-io/etcd/clientv3"
 )
 
@@ -33,6 +35,7 @@ func NewClient(opt *Options) (*Client, error) {
 	cfg := ecli.Config{
 		Endpoints:   opt.Endpoints,
 		DialTimeout: time.Second,
+		DialOptions: []grpc.DialOption{grpc.WithBlock()},
 	}
 
 	ecli, err := ecli.New(cfg)

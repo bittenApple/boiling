@@ -10,5 +10,5 @@ require (
 	github.com/stretchr/testify v1.2.2
 	github.com/ugorji/go/codec v0.0.0-20181120210156-7d13b37dbec6 // indirect
 	golang.org/x/net v0.0.0-20181114220301-adae6a3d119a // indirect
-	google.golang.org/grpc v1.16.0 // indirect
+	google.golang.org/grpc v1.16.0
 )
