@@ -9,14 +9,14 @@ import (
 var logger *log.Logger
 
 func init() {
-	SetLogger(log.New(os.Stderr, "boiling: ", log.LstdFlags|log.Lshortfile))
+	setLogger(log.New(os.Stderr, "boiling: ", log.LstdFlags|log.Lshortfile))
 }
 
-func SetLogger(l *log.Logger) {
+func setLogger(l *log.Logger) {
 	logger = l
 }
 
-func LogErrf(s string, args ...interface{}) {
+func logErrf(s string, args ...interface{}) {
 	if logger == nil {
 		return
 	}

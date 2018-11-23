@@ -43,12 +43,12 @@ func NewClient(opt *Options) (*Client, error) {
 
 	ecli, err := ecli.New(cfg)
 	if err != nil {
-		LogErrf("init etcd client failed: %s", err)
+		logErrf("init etcd client failed: %s", err)
 		return nil, err
 	}
 
 	if opt.Buffer < 0 {
-		LogErrf("buffer option should not be negative: %d", err)
+		logErrf("buffer option should not be negative: %d", err)
 		return nil, errors.New("error step option")
 	}
 
@@ -69,7 +69,7 @@ func NewClient(opt *Options) (*Client, error) {
 	if c.options.Initial {
 		err = c.Reset()
 		if err != nil {
-			LogErrf("reset etcd key failed: %s", err)
+			logErrf("reset etcd key failed: %s", err)
 			return nil, err
 		}
 	}
@@ -90,12 +90,12 @@ func (c *Client) run() {
 	for {
 		select {
 		case <-c.ctx.Done():
-			LogErrf("boiling was stopped")
+			logErrf("boiling was stopped")
 			return
 		default:
 			resp, err := c.ecli.Put(context.Background(), c.options.Key, defaultVal, ecli.WithPrevKV())
 			if err != nil {
-				LogErrf("put request error: %s", err)
+				logErrf("put request error: %s", err)
 				time.Sleep(100 * time.Millisecond)
 				continue
 			}
