@@ -15,6 +15,7 @@ const (
 	defaultVal = "BoilingValue"
 )
 
+// Options configures how we set up the client.
 type Options struct {
 	Key       string   // the key name in etcd
 	Buffer    int64    // the buffered ids interactive once with etcd
@@ -23,6 +24,7 @@ type Options struct {
 	Initial   bool     // Whether restart from start value
 }
 
+// Client provides and manages an boiling client
 type Client struct {
 	options *Options
 	ecli    *ecli.Client
